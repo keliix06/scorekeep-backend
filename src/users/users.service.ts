@@ -13,8 +13,8 @@ export class UsersService {
 
   create(createUserDto: CreateUserDto): Promise<User> {
     const user = new User();
-    user.firstName = createUserDto.firstName;
-    user.lastName = createUserDto.lastName;
+    user.firstname = createUserDto.firstname;
+    user.lastname = createUserDto.lastname;
     user.username = createUserDto.username;
     user.password = createUserDto.password; // todo hashing
     user.email = createUserDto.email;
@@ -28,6 +28,21 @@ export class UsersService {
 
   async findOne(id: string): Promise<User | null> {
     return await this.usersRepository.findOneBy({ id: id });
+  }
+
+  async findByUsername(username: string): Promise<User | null> {
+    console.log(username);
+    // const user = await this.usersRepository
+    //   .createQueryBuilder()
+    //   .where('username= :username', { username: username })
+    //   .getOne();
+    // console.log(user);
+    const userQuery = await this.usersRepository
+      .createQueryBuilder()
+      .where('username= :username', { username: username })
+      .getSql();
+    console.log(userQuery);
+    return await this.usersRepository.findOneBy({ username: username });
   }
 
   async remove(id: string): Promise<void> {

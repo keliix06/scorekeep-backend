@@ -6,15 +6,15 @@ import { Repository } from 'typeorm';
 
 const userArray = [
   {
-    firstName: 'firstName #1',
-    lastName: 'lastName #1',
+    firstname: 'firstName #1',
+    lastname: 'lastName #1',
     username: 'fancyuser',
     password: 'password',
     email: 'fancyuser@site.com',
   },
   {
-    firstName: 'firstName #2',
-    lastName: 'lastName #2',
+    firstname: 'firstName #2',
+    lastname: 'lastName #2',
     username: 'fancyuser2',
     password: 'password',
     email: 'fancyuser2@site.com',
@@ -22,8 +22,8 @@ const userArray = [
 ];
 
 const oneUser = {
-  firstName: 'firstName #1',
-  lastName: 'lastName #1',
+  firstname: 'firstName #1',
+  lastname: 'lastName #1',
   username: 'fancyuser',
   password: 'password',
   email: 'fancyuser@site.com',
@@ -61,8 +61,8 @@ describe('UserService', () => {
   describe('create()', () => {
     it('should successfully insert a user', () => {
       const oneUser = {
-        firstName: 'firstName #1',
-        lastName: 'lastName #1',
+        firstname: 'firstName #1',
+        lastname: 'lastName #1',
         username: 'fancyuser',
         password: 'password',
         email: 'fancyuser@site.com',
@@ -70,8 +70,8 @@ describe('UserService', () => {
 
       expect(
         service.create({
-          firstName: 'firstName #1',
-          lastName: 'lastName #1',
+          firstname: 'firstName #1',
+          lastname: 'lastName #1',
           username: 'fancyuser',
           password: 'password',
           email: 'fancyuser@site.com',
@@ -91,7 +91,15 @@ describe('UserService', () => {
     it('should get a single user', () => {
       const repoSpy = jest.spyOn(repository, 'findOneBy');
       expect(service.findOne('1')).resolves.toEqual(oneUser);
-      expect(repoSpy).toBeCalledWith({ id: 1 });
+      expect(repoSpy).toBeCalledWith({ id: '1' });
+    });
+  });
+
+  describe('findByUsername()', () => {
+    it('should get a single user by username', () => {
+      const repoSpy = jest.spyOn(repository, 'findOneBy');
+      expect(service.findByUsername('fancyuser')).resolves.toEqual(oneUser);
+      expect(repoSpy).toBeCalledWith({ username: 'fancyuser' });
     });
   });
 

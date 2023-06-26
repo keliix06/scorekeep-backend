@@ -1,15 +1,15 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', length: 300 })
-  firstName: string;
+  firstname: string;
 
   @Column({ type: 'varchar', length: 300 })
-  lastName: string;
+  lastname: string;
 
   @Column({ type: 'varchar', length: 300 })
   username: string;

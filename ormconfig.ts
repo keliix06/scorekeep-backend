@@ -27,8 +27,8 @@ export function config(env?: Env): TypeOrmModuleOptions {
   return {
     type: 'postgres',
     ...envVars,
-    entities: [__dirname + '/src/**/*.entity{.ts}'],
-    migrations: [__dirname + '/src/migrations/*{.ts}'],
+    entities: [__dirname + '/src/**/*.entity.{js,ts}'],
+    migrations: [__dirname + '/src/migrations/*.{js,ts}'],
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     cli: { migrationsDir: __dirname + './migrations' },
