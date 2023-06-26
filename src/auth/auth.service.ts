@@ -12,9 +12,6 @@ export class AuthService {
   async signIn(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findByUsername(username);
     // TODO hashing
-    console.log(user);
-    console.log(username);
-    console.log(pass);
     if (user?.password !== pass) {
       throw new UnauthorizedException();
     }

@@ -31,17 +31,6 @@ export class UsersService {
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    console.log(username);
-    // const user = await this.usersRepository
-    //   .createQueryBuilder()
-    //   .where('username= :username', { username: username })
-    //   .getOne();
-    // console.log(user);
-    const userQuery = await this.usersRepository
-      .createQueryBuilder()
-      .where('username= :username', { username: username })
-      .getSql();
-    console.log(userQuery);
     return await this.usersRepository.findOneBy({ username: username });
   }
 
