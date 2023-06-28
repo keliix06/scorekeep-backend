@@ -7,6 +7,8 @@ import {
   Post,
   ClassSerializerInterceptor,
   UseInterceptors,
+  UnauthorizedException,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -17,6 +19,9 @@ import {
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { Team } from './team.entity';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '../users/user.entity';
+import { UpdateTeamDto } from './dto/update-team.dto';
 
 @ApiTags('teams')
 @Controller('teams')
@@ -32,8 +37,30 @@ export class TeamsController {
     isArray: false,
   })
   @ApiBearerAuth()
-  create(@Body() createTeamDto: CreateTeamDto): Promise<Team> {
+  create(
+    @GetUser() user: User,
+    @Body() createTeamDto: CreateTeamDto,
+  ): Promise<Team> {
+    createTeamDto.user_id = user.id;
     return this.teamsService.create(createTeamDto);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Put(':id')
+  @ApiOperation({ summary: 'Update team' })
+  @ApiResponse({
+    description: 'The updated team',
+    type: Team,
+    isArray: false,
+  })
+  @ApiBearerAuth()
+  update(
+    @GetUser() user: User,
+    @Body() updateTeamDto: UpdateTeamDto,
+    @Param('id') id: string,
+  ): Promise<Team | null> {
+    updateTeamDto.id = id;
+    return this.teamsService.update(updateTeamDto, user.id);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -45,8 +72,8 @@ export class TeamsController {
     isArray: true,
   })
   @ApiBearerAuth()
-  findAll(): Promise<Team[]> {
-    return this.teamsService.findAll();
+  findAll(@GetUser() user: User): Promise<Team[]> {
+    return this.teamsService.findAll(user.id);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -58,14 +85,29 @@ export class TeamsController {
     isArray: false,
   })
   @ApiBearerAuth()
-  findOne(@Param('id') id: string): Promise<Team | null> {
+  async findOne(
+    @GetUser() user: User,
+    @Param('id') id: string,
+  ): Promise<Team | null> {
+    const team = await this.teamsService.findOne(id);
+
+    if (user.id !== team?.user_id) {
+      throw new UnauthorizedException();
+    }
+
     return this.teamsService.findOne(id);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a team owned by current user' })
   @ApiBearerAuth()
-  remove(@Param('id') id: string): Promise<void> {
+  async remove(@GetUser() user: User, @Param('id') id: string): Promise<void> {
+    const team = await this.teamsService.findOne(id);
+
+    if (user.id !== team?.user_id) {
+      throw new UnauthorizedException();
+    }
+
     return this.teamsService.remove(id);
   }
 }

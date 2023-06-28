@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Team } from './team.entity';
@@ -15,14 +15,19 @@ export class TeamsService {
   async create(createTeamDto: CreateTeamDto): Promise<Team> {
     const team = new Team();
     team.name = createTeamDto.name;
-    // TODO Auth Guard to get current user ID instead of it being in the request
     team.user_id = createTeamDto.user_id;
     return this.teamsRepository.save(team);
   }
 
-  async update(updateTeamDto: UpdateTeamDto): Promise<Team | null> {
+  async update(
+    updateTeamDto: UpdateTeamDto,
+    userId: string,
+  ): Promise<Team | null> {
     const team = await this.teamsRepository.findOneBy({ id: updateTeamDto.id });
-    // TODO verify that team is owned by current user
+
+    if (team?.user_id !== userId) {
+      throw new UnauthorizedException();
+    }
 
     if (team) {
       team.name = updateTeamDto.name;
@@ -32,18 +37,15 @@ export class TeamsService {
     return null;
   }
 
-  async findAll(): Promise<Team[]> {
-    // TODO only owned by current user
-    return this.teamsRepository.find();
+  async findAll(user_id: string): Promise<Team[]> {
+    return this.teamsRepository.findBy({ user_id: user_id });
   }
 
   async findOne(id: string): Promise<Team | null> {
-    // TODO only owned by current user
     return await this.teamsRepository.findOneBy({ id: id });
   }
 
   async remove(id: string): Promise<void> {
-    // TODO only owned by current user
     await this.teamsRepository.delete(id);
   }
 }
