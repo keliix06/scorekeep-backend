@@ -24,19 +24,11 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
-  }
-
   async findOne(id: string): Promise<User | null> {
     return await this.usersRepository.findOneBy({ id: id });
   }
 
   async findByUsername(username: string): Promise<User | null> {
     return await this.usersRepository.findOneBy({ username: username });
-  }
-
-  async remove(id: string): Promise<void> {
-    await this.usersRepository.delete(id);
   }
 }

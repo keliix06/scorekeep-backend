@@ -11,7 +11,7 @@ export class CreateUsersTable1687756412659 implements MigrationInterface {
     );
 
     await queryRunner.query(
-      `create index users_username_index on users (username)`,
+      `create unique index users_username_uindex on users (username)`,
     );
   }
 
