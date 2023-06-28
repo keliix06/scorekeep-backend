@@ -5,6 +5,7 @@ import { UtilsModule } from './utils/utils.module';
 import { Env } from './utils/env/env.service';
 import { config } from '../ormconfig';
 import { AuthModule } from './auth/auth.module';
+import { TeamsModule } from './teams/teams.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AuthModule,
+    TeamsModule,
   ],
 })
 export class AppModule {}
