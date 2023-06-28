@@ -46,7 +46,7 @@ export class TeamsController {
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
-  @Put(':id')
+  @Put()
   @ApiOperation({ summary: 'Update team' })
   @ApiResponse({
     description: 'The updated team',
@@ -57,9 +57,7 @@ export class TeamsController {
   update(
     @GetUser() user: User,
     @Body() updateTeamDto: UpdateTeamDto,
-    @Param('id') id: string,
   ): Promise<Team | null> {
-    updateTeamDto.id = id;
     return this.teamsService.update(updateTeamDto, user.id);
   }
 
