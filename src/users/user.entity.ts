@@ -25,21 +25,17 @@ export class User {
     example: 'cooluser',
     description: 'Username for logging in',
   })
-  @Column({ type: 'varchar', length: 300 })
+  @Column({ type: 'varchar', length: 300, unique: true })
   username: string;
 
-  @Exclude()
-  @ApiProperty({
-    example: '1243lbb*&^',
-    description: 'Password for logging in',
-  })
   @Column({ type: 'varchar', length: 300 })
+  @Exclude()
   password: string;
 
   @ApiProperty({
     example: 'john@doe.com',
     description: "User's email address",
   })
-  @Column({ type: 'varchar', length: 300 })
+  @Column({ type: 'varchar', length: 300, unique: true })
   email: string;
 }
