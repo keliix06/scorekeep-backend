@@ -41,7 +41,7 @@ export class TeamsController {
     @GetUser() user: User,
     @Body() createTeamDto: CreateTeamDto,
   ): Promise<Team> {
-    createTeamDto.user_id = user.id;
+    createTeamDto.userId = user.id;
     return this.teamsService.create(createTeamDto);
   }
 
@@ -89,7 +89,7 @@ export class TeamsController {
   ): Promise<Team | null> {
     const team = await this.teamsService.findOne(id);
 
-    if (user.id !== team?.user_id) {
+    if (user.id !== team?.userId) {
       throw new UnauthorizedException();
     }
 
@@ -102,7 +102,7 @@ export class TeamsController {
   async remove(@GetUser() user: User, @Param('id') id: string): Promise<void> {
     const team = await this.teamsService.findOne(id);
 
-    if (user.id !== team?.user_id) {
+    if (user.id !== team?.userId) {
       throw new UnauthorizedException();
     }
 
