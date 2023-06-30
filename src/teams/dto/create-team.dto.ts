@@ -7,5 +7,5 @@ export class CreateTeamDto {
   name: string;
   @IsString()
   @ApiProperty()
-  user_id: string;
+  userId: string;
 }

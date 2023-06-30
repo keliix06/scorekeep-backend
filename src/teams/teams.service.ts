@@ -15,7 +15,7 @@ export class TeamsService {
   async create(createTeamDto: CreateTeamDto): Promise<Team> {
     const team = new Team();
     team.name = createTeamDto.name;
-    team.user_id = createTeamDto.user_id;
+    team.userId = createTeamDto.userId;
     return this.teamsRepository.save(team);
   }
 
@@ -25,7 +25,7 @@ export class TeamsService {
   ): Promise<Team | null> {
     const team = await this.teamsRepository.findOneBy({ id: updateTeamDto.id });
 
-    if (team?.user_id !== userId) {
+    if (team?.userId !== userId) {
       throw new UnauthorizedException();
     }
 
@@ -37,8 +37,18 @@ export class TeamsService {
     return null;
   }
 
-  async findAll(user_id: string): Promise<Team[]> {
-    return this.teamsRepository.findBy({ user_id: user_id });
+  async findAll(userId: string): Promise<Team[]> {
+    return this.teamsRepository.find({
+      where: { userId: userId },
+      relations: ['players'],
+    });
+  }
+
+  async findAllPlayers(id: string): Promise<Team | null> {
+    return this.teamsRepository.findOne({
+      where: { id: id },
+      // relations: ['players'],
+    });
   }
 
   async findOne(id: string): Promise<Team | null> {

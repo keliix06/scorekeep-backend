@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity({ name: 'users' })
+@Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
