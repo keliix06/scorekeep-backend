@@ -67,9 +67,9 @@ export class PlayersController {
     @GetUser() user: User,
     @Body() updatePlayerDto: UpdatePlayerDto,
   ): Promise<Player | null> {
-    const team = await this.teamsService.findOne(updatePlayerDto.teamId);
+    const player = await this.playersService.findOne(updatePlayerDto.id);
 
-    if (user.id !== team?.userId) {
+    if (user.id !== player?.team.userId) {
       throw new UnauthorizedException();
     }
 
@@ -78,34 +78,33 @@ export class PlayersController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
-  @ApiOperation({ summary: 'Get a list of all players for a given team' })
+  @ApiOperation({ summary: 'Get a single player' })
   @ApiResponse({
-    description: 'All players on the given team',
+    description: 'Get a single player',
     type: Player,
-    isArray: true,
+    isArray: false,
   })
   @ApiBearerAuth()
-  async findAll(
+  async findOne(
     @GetUser() user: User,
     @Param('id') id: string,
-  ): Promise<Player[] | null> {
-    const team = await this.teamsService.findAllPlayers(id);
+  ): Promise<Player> {
+    const player = await this.playersService.findOne(id);
 
-    if (user.id !== team?.userId) {
+    if (user.id !== player?.team.userId) {
       throw new UnauthorizedException();
     }
 
-    // temp able to return null
-    return null;
+    return player;
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a team owned by current user' })
   @ApiBearerAuth()
   async remove(@GetUser() user: User, @Param('id') id: string): Promise<void> {
-    const team = await this.teamsService.findOne(id);
+    const player = await this.playersService.findOne(id);
 
-    if (user.id !== team?.userId) {
+    if (user.id !== player?.team.userId) {
       throw new UnauthorizedException();
     }
 

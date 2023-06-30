@@ -8,12 +8,14 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Team } from '../teams/team.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Player {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Exclude()
   @ApiProperty({
     example: 'ab007508-4ade-45b4-ad34-48529a363c51',
     description: 'ID of team this player belongs to',

@@ -18,7 +18,6 @@ export class PlayersService {
     player.name = createTeamDto.name;
     player.team = team;
     player.number = createTeamDto.number;
-    console.log('PLAYER ', player);
     return this.playersRepository.save(player);
   }
 
@@ -35,7 +34,10 @@ export class PlayersService {
   }
 
   async findOne(id: string): Promise<Player | null> {
-    return await this.playersRepository.findOneBy({ id: id });
+    return await this.playersRepository.findOne({
+      where: { id: id },
+      relations: ['team'],
+    });
   }
 
   async remove(id: string): Promise<void> {
